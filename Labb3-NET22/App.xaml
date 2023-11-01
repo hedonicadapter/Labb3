@@ -1,9 +1,25 @@
 ﻿<Application x:Class="Labb3_NET22.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Labb3_NET22"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <Style TargetType="DataGrid">
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style TargetType="xctk:WatermarkTextBox">
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style TargetType="ListView">
+            <Setter Property="Margin" Value="4" />
+        </Style>
+
     </Application.Resources>
 </Application>

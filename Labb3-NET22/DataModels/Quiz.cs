@@ -1,28 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Labb3_NET22.Helpers;
 
-namespace Labb3_NET22.DataModels;   
+namespace Labb3_NET22.DataModels;
 
 public class Quiz
 {
-    private IEnumerable<Question> _questions;
-    private string _title = string.Empty;
-    public IEnumerable<Question> Questions => _questions;
-    public string Title => _title;
-
     public Quiz()
     {
-        _questions = new List<Question>();
+        Questions = new List<Question>();
+        RedundantList = new ObservableCollection<Question>();
+    }
+
+    public Quiz(string fileName)
+    {
+        var existingQuiz = FileHandler.ReadQuizFile(fileName);
+
+        if (existingQuiz != null)
+        {
+            Questions = existingQuiz.Questions;
+            RedundantList = existingQuiz.RedundantList;
+        }
+        else
+        {
+            Questions = new List<Question>();
+            RedundantList = new ObservableCollection<Question>();
+        }
+    }
+
+    public IEnumerable<Question> Questions { get; }
+
+    public string Title { get; set; } = string.Empty;
+
+
+    public ObservableCollection<Question> RedundantList { get; set; }
+
+    public void RandomizeQuestions()
+    {
+        var rand = new Random();
+        RedundantList = new ObservableCollection<Question>(RedundantList.OrderBy(question => rand.Next()));
     }
 
     public Question GetRandomQuestion()
     {
-        throw new NotImplementedException("A random Question needs to be returned here!");
+        var rand = new Random();
+        var index = rand.Next(0, RedundantList.Count);
+
+        return RedundantList[index];
     }
 
     public void AddQuestion(string statement, int correctAnswer, params string[] answers)
     {
-        throw new NotImplementedException("Question need to be instantiated and added to list of questions here!");
+        RedundantList.Add(new Question { Statement = statement, Answers = answers, CorrectAnswer = correctAnswer });
     }
 
     public void RemoveQuestion(int index)

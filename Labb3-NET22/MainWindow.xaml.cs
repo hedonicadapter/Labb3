@@ -1,28 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Labb3_NET22.DataModels;
+using Labb3_NET22.Helpers;
 
-namespace Labb3_NET22
+namespace Labb3_NET22;
+
+/// <summary>
+///     Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    private readonly WindowHandler _windows;
+
+    public MainWindow()
     {
-        public MainWindow()
+        InitializeComponent();
+        var question = new Question
         {
-            InitializeComponent();
-        }
+            Statement = "hello",
+            Answers = new[] { "" },
+            CorrectAnswer = 0
+        };
+
+        _windows = new WindowHandler();
+        DataContext = question;
+    }
+
+    private void PlayButton_Click(object sender, RoutedEventArgs e)
+    {
+        _windows.ShowWindow("Play");
+    }
+
+    private void EditButton_Click(object sender, RoutedEventArgs e)
+    {
+        _windows.ShowWindow("Edit");
+    }
+
+    private void CreateButton_Click(object sender, RoutedEventArgs e)
+    {
+        _windows.ShowWindow("Create");
     }
 }
