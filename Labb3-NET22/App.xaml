@@ -5,6 +5,28 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
+        <ControlTemplate x:Key="SelectedTemplate" TargetType="ListViewItem">
+            <Border
+                Background="{TemplateBinding Background}"
+                x:Name="border">
+                <ContentControl
+                    Content="{TemplateBinding Content}" />
+            </Border>
+        </ControlTemplate>
+        <Style TargetType="ListViewItem">
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsSelected" Value="true" />
+                        <Condition Property="Selector.IsSelectionActive" Value="true" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="Pink" />
+                    <Setter Property="Template" Value="{StaticResource SelectedTemplate}" />
+                    <Setter Property="Margin" Value="4" />
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style TargetType="DataGrid">
             <Setter Property="Margin" Value="4" />
         </Style>
@@ -20,6 +42,7 @@
         <Style TargetType="ListView">
             <Setter Property="Margin" Value="4" />
         </Style>
+
 
     </Application.Resources>
 </Application>

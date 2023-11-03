@@ -25,7 +25,11 @@ public class PlayControlDataContext
 
 public class InGameControlDataContext : INotifyPropertyChanged
 {
+    private string _buttonText = "Next";
     private Question? _currentQuestion;
+
+    private int _currentQuestionIndex;
+
 
     public InGameControlDataContext(Quiz selectedQuiz)
     {
@@ -35,11 +39,14 @@ public class InGameControlDataContext : INotifyPropertyChanged
         CurrentQuestion = CurrentQuiz.RedundantList[0];
     }
 
-    public InGameControlDataContext()
-    {
-    }
 
     public Quiz CurrentQuiz { get; }
+
+    public string ButtonText
+    {
+        get => _buttonText;
+        private set => SetField(ref _buttonText, value);
+    }
 
     public Question CurrentQuestion
     {
@@ -47,7 +54,16 @@ public class InGameControlDataContext : INotifyPropertyChanged
         private set => SetField(ref _currentQuestion, value);
     }
 
-    private int CurrentQuestionIndex { get; set; }
+    private int CurrentQuestionIndex
+    {
+        get => _currentQuestionIndex;
+        set
+        {
+            _currentQuestionIndex = value;
+
+            ButtonText = value == CurrentQuiz.RedundantList.Count - 1 ? "Finish" : "Next";
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

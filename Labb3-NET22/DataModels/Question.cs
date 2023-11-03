@@ -16,6 +16,7 @@ public class Question : INotifyPropertyChanged
     }
 
     public int CorrectAnswer { get; set; }
+    public int AttemptedAnswer { get; set; }
     public event PropertyChangedEventHandler? PropertyChanged;
 
     // Rider generated

@@ -3,15 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:helpers="clr-namespace:Labb3_NET22.Helpers"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" Height="410" Width="320">
 
-    <StackPanel>
-        <Label Content="Question" />
-        <TextBlock Text="{Binding CurrentQuestion.Statement}" />
-        <StackPanel Orientation="Horizontal">
-            <Button Content="Previous" Name="PreviousButton" Click="PreviousButton_OnClick" />
-            <Button Content="Next" Name="NextButton" Click="NextButton_OnClick" />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="35" />
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="Question" />
+        <TextBlock Grid.Row="1" Text="{Binding CurrentQuestion.Statement}" />
+        <ListView Grid.Row="2" Name="AnswersListBox" ItemsSource="{Binding CurrentQuestion.Answers}"
+                  MinHeight="20"
+                  SelectionMode="Single" SelectionChanged="AnswersListBox_OnSelectionChanged" />
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="60" Content="Previous" Name="PreviousButton" Click="PreviousButton_OnClick" />
+            <Button Width="60" Name="NextButton" Click="NextButton_OnClick"
+                    Content="{Binding ButtonText}" />
         </StackPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>

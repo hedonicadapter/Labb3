@@ -26,4 +26,9 @@ public partial class InGameControl : UserControl
     {
         Context.TraverseQuestions(true);
     }
+
+    private void AnswersListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        Context.CurrentQuestion.AttemptedAnswer = AnswersListBox.SelectedIndex;
+    }
 }
