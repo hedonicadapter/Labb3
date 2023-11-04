@@ -24,6 +24,10 @@ public partial class InGameControl : UserControl
 
     private void NextButton_OnClick(object sender, RoutedEventArgs e)
     {
+        if ((string)NextButton.Content == "Finish")
+            // Context.ShowQuizResults();
+            return;
+
         Context.TraverseQuestions(true);
     }
 

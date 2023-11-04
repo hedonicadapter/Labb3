@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Labb3_NET22.DataModels;
 using Labb3_NET22.Helpers;
@@ -26,8 +27,8 @@ public class PlayControlDataContext
 public class InGameControlDataContext : INotifyPropertyChanged
 {
     private string _buttonText = "Next";
+    private int _correctAnswers;
     private Question? _currentQuestion;
-
     private int _currentQuestionIndex;
 
 
@@ -35,10 +36,16 @@ public class InGameControlDataContext : INotifyPropertyChanged
     {
         CurrentQuiz = selectedQuiz;
         CurrentQuiz.RandomizeQuestions();
+        CorrectAnswers = 0;
 
         CurrentQuestion = CurrentQuiz.RedundantList[0];
     }
 
+    public int CorrectAnswers
+    {
+        get => _correctAnswers;
+        private set => SetField(ref _correctAnswers, value);
+    }
 
     public Quiz CurrentQuiz { get; }
 
@@ -67,6 +74,14 @@ public class InGameControlDataContext : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private void CountCorrect()
+    {
+        CorrectAnswers =
+            CurrentQuiz.RedundantList.Count(question => question.AttemptedAnswer == question.CorrectAnswer);
+
+        // MessageBox.Show();
+    }
+
     public void TraverseQuestions(bool goNext)
     {
         var max = CurrentQuiz.RedundantList.Count;
@@ -84,6 +99,7 @@ public class InGameControlDataContext : INotifyPropertyChanged
             if (newIndex < max && newIndex >= 0) CurrentQuestionIndex = newIndex;
         }
 
+        CountCorrect();
         CurrentQuestion = CurrentQuiz.RedundantList[CurrentQuestionIndex];
     }
 

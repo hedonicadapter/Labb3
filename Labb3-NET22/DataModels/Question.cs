@@ -7,7 +7,22 @@ namespace Labb3_NET22.DataModels;
 public class Question : INotifyPropertyChanged
 {
     private string[]? _answers;
-    public string Statement { get; set; }
+
+    public Question(string statement,
+        string[] answers,
+        int correctAnswer)
+    {
+        Statement = statement;
+        Answers = answers;
+        CorrectAnswer = correctAnswer;
+        AttemptedAnswer = -1;
+    }
+
+    public Question()
+    {
+    }
+
+    public string? Statement { get; set; }
 
     public string[] Answers
     {

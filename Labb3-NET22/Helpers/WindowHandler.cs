@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Labb3_NET22.DataModels;
@@ -8,49 +9,34 @@ namespace Labb3_NET22.Helpers;
 
 public class WindowHandler
 {
-    public WindowHandler()
+    // Chat-GPT
+    private static readonly string? AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+
+    private static CustomWindow? GetWindow(string windowName)
     {
-        var windows = InitWindows();
+        var className = $"Labb3_NET22.{windowName}Control, {AssemblyName}";
+        var controlClass = Type.GetType(className);
 
-        foreach (var window in windows) ControlWindows.Add(window.Name, window);
-    }
+        if (controlClass == null) return null;
 
-    private Dictionary<string, CustomWindow> ControlWindows { get; } = new();
+        // Chat-GPT
+        // Create an instance of the class using Activator.CreateInstance
+        var instance = Activator.CreateInstance(controlClass);
+        if (instance == null) return null;
 
-    private CustomWindow[] InitWindows()
-    {
-        UserControl createQuizControl = new CreateControl();
-        UserControl editQuizControl = new EditControl();
-        UserControl playQuizControl = new PlayControl();
-
-        var createWindow = new CustomWindow
+        var newWindow = new CustomWindow
         {
-            Title = "Create quiz",
-            Name = "Create",
-            Content = createQuizControl
+            Title = windowName + " quiz",
+            Name = windowName,
+            Content = instance
         };
 
-        var editWindow = new CustomWindow
-        {
-            Title = "Edit quiz",
-            Name = "Edit",
-            Content = editQuizControl
-        };
-
-        var playWindow = new CustomWindow
-        {
-            Title = "Play",
-            Name = "Play",
-            Content = playQuizControl
-        };
-
-
-        return new[] { createWindow, editWindow, playWindow };
+        return newWindow;
     }
 
     public void ShowWindow(string windowName)
     {
-        ControlWindows.TryGetValue(windowName, out var window);
+        var window = GetWindow(windowName);
         if (window == null) return;
 
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -67,6 +53,7 @@ public class WindowHandler
             Name = "InGame",
             Content = inGameControl
         };
+        inGameWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
         inGameWindow.Show();
     }
