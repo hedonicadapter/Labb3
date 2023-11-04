@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using Labb3_NET22.Helpers;
+using Microsoft.Win32;
 
 namespace Labb3_NET22;
 
@@ -50,5 +53,33 @@ public partial class CreateControl : UserControl
     private void QuizTitleTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
     {
         Context.CurrentQuiz.Title = QuizTitleTextBox.Text;
+    }
+
+    private async void AddImageButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        var openFileDialog = new OpenFileDialog
+        {
+            Filter = "Image Files | *.png; *.jpg; *.jpeg; *.bmp"
+        };
+
+        if (openFileDialog.ShowDialog() != true) return;
+
+        var imagePath = openFileDialog.FileName;
+
+        try
+        {
+            var bmp = new BitmapImage(new Uri(imagePath));
+            ImageElement.Source = bmp;
+
+            var imageBytes = FileHandler.ConvertBmpToBytes(bmp);
+
+            Context.CurrentQuestion.Image = imageBytes;
+        }
+        catch (Exception err)
+        {
+            MessageBox.Show($"Something went wrong setting your image: {err}");
+        }
+
+        ;
     }
 }

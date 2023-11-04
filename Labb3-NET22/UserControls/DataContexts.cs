@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Labb3_NET22.DataModels;
 using Labb3_NET22.Helpers;
+using Xceed.Wpf.Toolkit;
 
 namespace Labb3_NET22;
 
@@ -16,12 +19,30 @@ public class CreateControlDataContext
 
 public class PlayControlDataContext
 {
-    public PlayControlDataContext()
+    private PlayControlDataContext()
     {
-        Quizzes = new ObservableCollection<Quiz>(FileHandler.ReadQuizFiles());
+        Quizzes = new ObservableCollection<Quiz>();
     }
 
-    public ObservableCollection<Quiz> Quizzes { get; }
+    public ObservableCollection<Quiz> Quizzes { get; private set; }
+
+    public static async Task<PlayControlDataContext> AsyncConstructor()
+    {
+        var instance = new PlayControlDataContext();
+
+        try
+        {
+            var quizzesFromFiles = await FileHandler.ReadQuizFiles();
+
+            instance.Quizzes = new ObservableCollection<Quiz>(quizzesFromFiles);
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show($"Something went wrong creating play control context: {e}");
+        }
+
+        return instance;
+    }
 }
 
 public class InGameControlDataContext : INotifyPropertyChanged
@@ -55,7 +76,7 @@ public class InGameControlDataContext : INotifyPropertyChanged
         private set => SetField(ref _buttonText, value);
     }
 
-    public Question CurrentQuestion
+    public Question? CurrentQuestion
     {
         get => _currentQuestion;
         private set => SetField(ref _currentQuestion, value);

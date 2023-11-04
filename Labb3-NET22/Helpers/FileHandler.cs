@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Labb3_NET22.DataModels;
 using Newtonsoft.Json;
 
@@ -25,16 +27,16 @@ public static class FileHandler
     }
 
 
-    public static List<Quiz> ReadQuizFiles()
+    public static async Task<List<Quiz>?> ReadQuizFiles()
     {
         try
         {
-            List<Quiz> foundQuizFiles = new();
+            List<Quiz>? foundQuizFiles = new();
             var availableFiles = Directory.EnumerateFiles($"{AppDataPath}/Labb3", "*.json");
 
             foreach (var file in availableFiles)
             {
-                var text = File.ReadAllText(file);
+                var text = await File.ReadAllTextAsync(file);
                 var quiz = JsonConvert.DeserializeObject<Quiz>(text);
 
                 if (quiz != null) foundQuizFiles.Add(quiz);
@@ -53,15 +55,13 @@ public static class FileHandler
         return null;
     }
 
-    public static Quiz? ReadQuizFile(string fileName)
+    public static async Task<Quiz?> ReadQuizFileAsync(string fileName)
     {
         try
         {
-            using (var r = new StreamReader($"{AppDataPath}/Labb3/{fileName}"))
-            {
-                var fileData = r.ReadToEnd();
-                return JsonConvert.DeserializeObject<Quiz>(fileData);
-            }
+            using var r = new StreamReader($"{AppDataPath}/Labb3/{fileName}");
+            var fileData = await r.ReadToEndAsync();
+            return JsonConvert.DeserializeObject<Quiz>(fileData);
         }
         catch (Exception e)
         {
@@ -84,5 +84,28 @@ public static class FileHandler
         {
             MessageBox.Show($"Something went wrong creating your file: {e}");
         }
+    }
+
+    // Chat-GPT
+    public static byte[] ConvertBmpToBytes(BitmapImage bitmapImage)
+    {
+        using var stream = new MemoryStream();
+        var encoder = new BmpBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+        encoder.Save(stream);
+        return stream.ToArray();
+    }
+
+    // Chat-GPT
+    public static BitmapImage ConvertBytesToBmp(byte[] imageBytes)
+    {
+        var bitmapImage = new BitmapImage();
+        using var stream = new MemoryStream(imageBytes);
+        bitmapImage.BeginInit();
+        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+        bitmapImage.StreamSource = stream;
+        bitmapImage.EndInit();
+
+        return bitmapImage;
     }
 }

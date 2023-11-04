@@ -8,6 +8,7 @@ public class Question : INotifyPropertyChanged
 {
     private string[]? _answers;
 
+
     public Question(string statement,
         string[] answers,
         int correctAnswer)
@@ -23,6 +24,9 @@ public class Question : INotifyPropertyChanged
     }
 
     public string? Statement { get; set; }
+    public string? Tag { get; set; }
+
+    public byte[]? Image { get; set; } = new byte[0];
 
     public string[] Answers
     {

@@ -10,12 +10,18 @@ public partial class PlayControl : UserControl
 {
     public PlayControl()
     {
-        DataContext = Context;
+        InitializeDataContext();
 
         InitializeComponent();
     }
 
-    private PlayControlDataContext Context { get; } = new();
+    private PlayControlDataContext Context { get; set; }
+
+    private async void InitializeDataContext()
+    {
+        Context = await PlayControlDataContext.AsyncConstructor();
+        DataContext = Context;
+    }
 
     private void PlayButton_OnClick(object sender, RoutedEventArgs e)
     {

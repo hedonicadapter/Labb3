@@ -73,10 +73,16 @@
                 New question
             </GroupBox.Header>
             <StackPanel>
-                <xctk:WatermarkTextBox x:Name="StatementTextBox"
-                                       Text="{Binding Statement}"
-                                       Watermark="Write your question here..."
-                                       HorizontalAlignment="Stretch" />
+                <StackPanel.Resources>
+                </StackPanel.Resources>
+                <DockPanel>
+                    <xctk:WatermarkTextBox x:Name="StatementTextBox"
+                                           Text="{Binding Statement}"
+                                           Watermark="Write your question here..."
+                                           DockPanel.Dock="Left"
+                                           Width="180" />
+                    <ComboBox Width="Auto" Margin="4" ItemsSource="{Binding }" />
+                </DockPanel>
 
                 <Label>Possible answers</Label>
                 <ListView Name="PossibleAnswersListBox" ItemsSource="{Binding Answers}" MinHeight="20"
@@ -94,8 +100,11 @@
                     <Button Name="AddAnswerButton" Grid.Column="1" Content="Add"
                             Click="AddAnswerButton_OnClick" />
                 </Grid>
+                <Image x:Name="ImageElement" HorizontalAlignment="Left" />
+                <Button Content="Add image" HorizontalAlignment="Right" Name="AddImageButton"
+                        Click="AddImageButton_OnClick" />
 
-                <Separator Margin="4" />
+                <Separator Margin="4" VerticalAlignment="Bottom" Height="Auto" />
 
                 <Button Name="AddQuestionButton" Content="Add question"
                         HorizontalAlignment="Stretch" Click="AddQuestionButton_OnClick" />
