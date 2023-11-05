@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -19,15 +19,15 @@ public partial class EditControl : UserControl
         InitializeComponent();
     }
 
-    protected EditControlDataContext Context { get; set; }
+    private EditControlDataContext Context { get; }
 
-    protected void AddQuestionButton_OnClick(object sender, RoutedEventArgs e)
+    private void AddQuestionButton_OnClick(object sender, RoutedEventArgs e)
     {
         // Context.CurrentQuiz.AddQuestion(Context.CurrentQuestion.Statement, Context.CurrentQuestion.CorrectAnswer,
         //     Context.CurrentQuestion.Answers, Context.CurrentQuestion.Image);
     }
 
-    protected void AddAnswerButton_OnClick(object sender, RoutedEventArgs e)
+    private void AddAnswerButton_OnClick(object sender, RoutedEventArgs e)
     {
         if (AnswerTextBox.Text.Length < 1)
         {
@@ -35,29 +35,27 @@ public partial class EditControl : UserControl
             return;
         }
 
-        var currentAnswers = Context.CurrentQuestion.Answers != null
-            ? new List<string>(Context.CurrentQuestion.Answers)
-            : new List<string>();
+        var currentAnswers = Context.CurrentQuestion.Answers ?? new ObservableCollection<string>();
         var newAnswer = AnswerTextBox.Text;
         currentAnswers.Add(newAnswer);
 
-        Context.CurrentQuestion.Answers = currentAnswers.ToArray();
+        Context.CurrentQuestion.Answers = currentAnswers;
     }
 
-    protected void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         Context.CurrentlySelected = PossibleAnswersDataGrid.SelectedIndex;
     }
 
-    protected void CancelButton_OnClick(object sender, RoutedEventArgs e)
+    private void CancelButton_OnClick(object sender, RoutedEventArgs e)
     {
         var containerWindow = Window.GetWindow(this);
         containerWindow?.Hide();
     }
 
-    protected void SaveQuizButton_OnClick(object sender, RoutedEventArgs e)
+    private void SaveQuizButton_OnClick(object sender, RoutedEventArgs e)
     {
-        if (Context.CurrentQuestion.Answers == null || Context.CurrentQuestion.Answers.Length < 1)
+        if (Context.CurrentQuestion.Answers == null || Context.CurrentQuestion.Answers.Count < 1)
         {
             MessageBox.Show("Please add at least one answer."); // Borde vara two answers egentligen men w/e
             return;
@@ -73,12 +71,12 @@ public partial class EditControl : UserControl
         FileHandler.SaveQuiz(Context.CurrentQuiz);
     }
 
-    protected void QuizTitleTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+    private void QuizTitleTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
     {
         Context.CurrentQuiz.Title = QuizTitleTextBox.Text;
     }
 
-    protected void AddImageButton_OnClick(object sender, RoutedEventArgs e)
+    private void AddImageButton_OnClick(object sender, RoutedEventArgs e)
     {
         var openFileDialog = new OpenFileDialog
         {
@@ -106,9 +104,23 @@ public partial class EditControl : UserControl
         ;
     }
 
-    protected void RemoveImageButton_OnClick(object sender, RoutedEventArgs e)
+    private void RemoveImageButton_OnClick(object sender, RoutedEventArgs e)
     {
         Context.CurrentQuestion.Image = null;
         ImageElement.Source = null;
+    }
+
+    private void PossibleAnswersDataGrid_OnCellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
+    {
+        if (e.EditAction == DataGridEditAction.Commit)
+        {
+            var editedCell = e.EditingElement as TextBox;
+            var newValue = editedCell.Text;
+            var index = PossibleAnswersDataGrid.Items.IndexOf(e.Row.Item);
+
+            if (index >= 0 && index < Context.CurrentQuestion.Answers.Count)
+                Context.CurrentQuestion.Answers[index] =
+                    newValue;
+        }
     }
 }

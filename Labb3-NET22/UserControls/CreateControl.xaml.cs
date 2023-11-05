@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -45,13 +45,11 @@ public partial class CreateControl : UserControl
             return;
         }
 
-        var currentAnswers = Context.CurrentQuestion.Answers != null
-            ? new List<string>(Context.CurrentQuestion.Answers)
-            : new List<string>();
+        var currentAnswers = Context.CurrentQuestion.Answers ?? new ObservableCollection<string>();
         var newAnswer = AnswerTextBox.Text;
         currentAnswers.Add(newAnswer);
 
-        Context.CurrentQuestion.Answers = currentAnswers.ToArray();
+        Context.CurrentQuestion.Answers = currentAnswers;
     }
 
     protected void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

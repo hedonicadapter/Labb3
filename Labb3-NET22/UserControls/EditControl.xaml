@@ -34,11 +34,12 @@
 
             <xctk:WatermarkTextBox Grid.Column="0" x:Name="QuizTitleTextBox"
                                    Text="{Binding CurrentQuiz.Title}"
-                                   Watermark="Quiz title" TextChanged="QuizTitleTextBox_OnTextChanged" />
+                                   Watermark="Quiz title" TextChanged="QuizTitleTextBox_OnTextChanged"
+                                   IsEnabled="False" />
             <Label Grid.Column="1" Content=".json" />
         </Grid>
         <DataGrid Grid.Column="0" Grid.Row="1" x:Name="QuestionsDataGrid" MinHeight="100" MinWidth="240"
-                  AutoGenerateColumns="False" ItemsSource="{Binding CurrentQuiz.RedundantList}">
+                  AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding CurrentQuiz.RedundantList}">
             <DataGrid.Resources>
                 <helpers:AnswerIndexToStringConverter x:Key="IndexToStringConverter" />
             </DataGrid.Resources>
@@ -56,21 +57,25 @@
                 <DataGridTemplateColumn Width="1*" Header="Answers">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ItemsControl ItemsSource="{Binding Answers}" />
+                            <!-- Define an ItemsControl with a proper data template -->
+                            <ItemsControl ItemsSource="{Binding Answers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
-        <GroupBox Grid.Row="1" Grid.Column="1" Margin="10,10,10,10"
-                  DataContext="{Binding Context}">
+        <GroupBox Grid.Row="1" Grid.Column="1" Margin="10,10,10,10">
             <GroupBox.Header>
                 Edit question
             </GroupBox.Header>
             <StackPanel>
-                <StackPanel.Resources>
-                </StackPanel.Resources>
                 <DockPanel>
                     <xctk:WatermarkTextBox x:Name="StatementTextBox"
                                            Text="{Binding CurrentQuestion.Statement}"
@@ -81,35 +86,38 @@
                 </DockPanel>
 
                 <Label>Possible answers</Label>
-                <DataGrid Name="PossibleAnswersDataGrid" ItemsSource="{Binding CurrentQuestion.Answers}" MinHeight="20"
-                          SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Answers" Binding="{Binding}" />
-                    </DataGrid.Columns>
-                </DataGrid>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="48" />
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                    <Button Grid.Column="0" Grid.ColumnSpan="2" Content="Remove">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="IsEnabled" Value="False" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CurrentlySelected}" Value="">
-                                        <Setter Property="IsEnabled" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                    <xctk:WatermarkTextBox Grid.Column="0" x:Name="AnswerTextBox"
+                    <DataGrid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Name="PossibleAnswersDataGrid"
+                              ItemsSource="{Binding CurrentQuestion.Answers}" MinHeight="20"
+                              AutoGenerateColumns="False"
+                              SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged"
+                              CellEditEnding="PossibleAnswersDataGrid_OnCellEditEnding">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Answers" Binding="{Binding ., Mode=TwoWay}" />
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Remove" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <xctk:WatermarkTextBox Grid.Row="1" Grid.Column="0" x:Name="AnswerTextBox"
                                            Watermark="Add an answer..." />
 
-                    <Button Name="AddAnswerButton" Grid.Column="1" Content="Add"
+                    <Button Grid.Row="1" Name="AddAnswerButton" Grid.Column="1" Content="Add"
                             Click="AddAnswerButton_OnClick" />
                 </Grid>
                 <Image x:Name="ImageElement" HorizontalAlignment="Left" />
@@ -142,7 +150,7 @@
 
         <StackPanel Margin="4 0 8 4" Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Name="SaveQuizButton" Content="Cancel" HorizontalAlignment="Stretch" Click="CancelButton_OnClick" />
-            <Button Name="CancelButton" Content="Create" HorizontalAlignment="Stretch" Click="SaveQuizButton_OnClick" />
+            <Button Name="SaveButton" Content="Save" HorizontalAlignment="Stretch" Click="SaveQuizButton_OnClick" />
         </StackPanel>
     </Grid>
 </UserControl>

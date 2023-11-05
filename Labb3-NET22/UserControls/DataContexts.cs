@@ -18,7 +18,7 @@ public class MainWindowDataContext
 public class CreateControlDataContext
 {
     public Quiz CurrentQuiz { get; } = new();
-    public Question CurrentQuestion { get; } = new();
+    public Question CurrentQuestion { get; set; } = new();
 }
 
 public class MainControlDataContext
@@ -143,13 +143,28 @@ public class PlayControlDataContext : INotifyPropertyChanged
     }
 }
 
-public class EditControlDataContext : CreateControlDataContext
+public class EditControlDataContext
 {
+    private int _currentlySelected;
+
     public EditControlDataContext(Quiz selectedQuiz)
     {
         CurrentQuiz = selectedQuiz;
+        CurrentQuestion = CurrentQuiz.RedundantList.Count > 0 ? CurrentQuiz.RedundantList[0] : new Question();
+        CurrentlySelected = 0;
     }
 
     public Quiz CurrentQuiz { get; }
-    public int CurrentlySelected { get; set; } = 0;
+    public Question CurrentQuestion { get; set; }
+
+    public int CurrentlySelected
+    {
+        get => _currentlySelected;
+        set
+        {
+            _currentlySelected = value;
+            if (value >= 0 && value < CurrentQuiz.RedundantList.Count)
+                CurrentQuestion = CurrentQuiz.RedundantList[value];
+        }
+    }
 }

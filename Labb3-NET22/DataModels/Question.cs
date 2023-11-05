@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
@@ -8,12 +9,12 @@ namespace Labb3_NET22.DataModels;
 [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
 public class Question : INotifyPropertyChanged
 {
-    private string[]? _answers;
+    private ObservableCollection<string>? _answers;
     private byte[]? _image;
 
 
     public Question(string? statement,
-        string[]? answers,
+        ObservableCollection<string>? answers,
         int? correctAnswer, byte[]? image = null)
     {
         Statement = statement ?? null;
@@ -36,13 +37,12 @@ public class Question : INotifyPropertyChanged
         set => SetField(ref _image, value);
     }
 
-    public string[]? Answers
+    public ObservableCollection<string>? Answers
     {
         get => _answers;
         set => SetField(ref _answers, value);
     }
 
-    // Inte clean, men den dubblar som currently selected answer i EditControl
     public int? CorrectAnswer { get; set; }
     public int? AttemptedAnswer { get; set; }
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -40,7 +40,8 @@ public class Quiz
         return RedundantList[index];
     }
 
-    public void AddQuestion(string statement, int correctAnswer, string[] answers, byte[]? image = null)
+    public void AddQuestion(string statement, int correctAnswer, ObservableCollection<string> answers,
+        byte[]? image = null)
     {
         RedundantList.Add(new Question(statement, answers, correctAnswer, image));
     }
