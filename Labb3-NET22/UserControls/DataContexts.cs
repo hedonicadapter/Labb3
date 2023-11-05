@@ -11,41 +11,46 @@ using Xceed.Wpf.Toolkit;
 
 namespace Labb3_NET22;
 
+public class MainWindowDataContext
+{
+}
+
 public class CreateControlDataContext
 {
     public Quiz CurrentQuiz { get; } = new();
     public Question CurrentQuestion { get; } = new();
 }
 
-public class PlayControlDataContext
+public class MainControlDataContext
 {
-    private PlayControlDataContext()
+    private MainControlDataContext()
     {
-        Quizzes = new ObservableCollection<Quiz>();
     }
 
-    public ObservableCollection<Quiz> Quizzes { get; private set; }
+    public ObservableCollection<Quiz>? Quizzes { get; private set; }
 
-    public static async Task<PlayControlDataContext> AsyncConstructor()
+    public static async Task<MainControlDataContext> AsyncConstructor()
     {
-        var instance = new PlayControlDataContext();
+        var instance = new MainControlDataContext();
 
         try
         {
             var quizzesFromFiles = await FileHandler.ReadQuizFiles();
 
-            instance.Quizzes = new ObservableCollection<Quiz>(quizzesFromFiles);
+            instance.Quizzes = quizzesFromFiles != null
+                ? new ObservableCollection<Quiz>(quizzesFromFiles!)
+                : null;
         }
         catch (Exception e)
         {
-            MessageBox.Show($"Something went wrong creating play control context: {e}");
+            MessageBox.Show($"Something went wrong creating main context: {e}");
         }
 
         return instance;
     }
 }
 
-public class InGameControlDataContext : INotifyPropertyChanged
+public class PlayControlDataContext : INotifyPropertyChanged
 {
     private string _buttonText = "Next";
     private int _correctAnswers;
@@ -53,7 +58,7 @@ public class InGameControlDataContext : INotifyPropertyChanged
     private int _currentQuestionIndex;
 
 
-    public InGameControlDataContext(Quiz selectedQuiz)
+    public PlayControlDataContext(Quiz selectedQuiz)
     {
         CurrentQuiz = selectedQuiz;
         CurrentQuiz.RandomizeQuestions();
@@ -136,4 +141,8 @@ public class InGameControlDataContext : INotifyPropertyChanged
         OnPropertyChanged(propertyName);
         return true;
     }
+}
+
+public class EditControlDataContext : CreateControlDataContext
+{
 }

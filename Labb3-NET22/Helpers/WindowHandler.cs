@@ -11,16 +11,17 @@ public class WindowHandler
     // Chat-GPT
     private static readonly string? AssemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 
-    private static CustomWindow? GetWindow(string windowName)
+    private static CustomWindow? GetWindow(string windowName, object? data)
     {
         var className = $"Labb3_NET22.{windowName}Control, {AssemblyName}";
         var controlClass = Type.GetType(className);
 
         if (controlClass == null) return null;
 
-        // Chat-GPT
-        // Create an instance of the class using Activator.CreateInstance
-        var instance = Activator.CreateInstance(controlClass);
+        // Activator.CreateInstance från Chat-GPT
+        var instance = data != null
+            ? Activator.CreateInstance(controlClass, data)
+            : Activator.CreateInstance(controlClass);
         if (instance == null) return null;
 
         var newWindow = new CustomWindow
@@ -33,9 +34,9 @@ public class WindowHandler
         return newWindow;
     }
 
-    public void ShowWindow(string windowName)
+    public void ShowWindow(string windowName, object? data = null)
     {
-        var window = GetWindow(windowName);
+        var window = GetWindow(windowName, data);
         if (window == null) return;
 
         window.ShowDialog();
@@ -43,15 +44,19 @@ public class WindowHandler
 
     public static void StartQuiz(Quiz selectedQuiz)
     {
-        UserControl inGameControl = new InGameControl(selectedQuiz);
+        UserControl playControl = new PlayControl(selectedQuiz);
 
-        var inGameWindow = new CustomWindow
+        var playWindow = new CustomWindow
         {
             Title = "Playing",
-            Name = "InGame",
-            Content = inGameControl
+            Name = "Play",
+            Content = playControl
         };
 
-        inGameWindow.Show();
+        playWindow.Show();
+    }
+
+    public static void StartQuizEditor(Quiz selectedQuiz)
+    {
     }
 }

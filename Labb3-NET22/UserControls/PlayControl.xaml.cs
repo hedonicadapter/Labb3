@@ -1,50 +1,38 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Labb3_NET22.DataModels;
-using Labb3_NET22.Helpers;
 
-namespace Labb3_NET22;
+namespace Labb3_NET22.UserControls;
 
 public partial class PlayControl : UserControl
 {
-    public PlayControl()
+    public PlayControl(Quiz quiz)
     {
-        InitializeDataContext();
+        Context = new PlayControlDataContext(quiz);
+        DataContext = Context;
 
         InitializeComponent();
     }
 
-    private PlayControlDataContext Context { get; set; }
+    private PlayControlDataContext Context { get; }
 
-    private async void InitializeDataContext()
+
+    private void PreviousButton_OnClick(object sender, RoutedEventArgs e)
     {
-        Context = await PlayControlDataContext.AsyncConstructor();
-        DataContext = Context;
+        Context.TraverseQuestions(false);
     }
 
-    private void PlayButton_OnClick(object sender, RoutedEventArgs e)
+    private void NextButton_OnClick(object sender, RoutedEventArgs e)
     {
-        var selectedQuiz = (Quiz)QuizSelectionGrid.SelectedItem;
-
-        if (selectedQuiz == null)
-        {
-            MessageBox.Show("Select a quiz first idiota");
+        if ((string)NextButton.Content == "Finish")
+            // Context.ShowQuizResults();
             return;
-        }
 
-        WindowHandler.StartQuiz(selectedQuiz);
+        Context.TraverseQuestions(true);
     }
 
-    private void QuizSelectionGrid_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    private void AnswersListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (QuizSelectionGrid.SelectedItem == null) return;
-
-        // Chat-GPT
-        // Check if an item (row) was double-clicked
-        var row =
-            ItemsControl.ContainerFromElement(QuizSelectionGrid, e.OriginalSource as DependencyObject) as DataGridRow;
-
-        if (row != null) PlayButton_OnClick(sender, e);
+        Context.CurrentQuestion.AttemptedAnswer = AnswersListBox.SelectedIndex;
     }
 }

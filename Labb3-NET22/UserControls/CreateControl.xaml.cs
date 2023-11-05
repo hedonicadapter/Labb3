@@ -17,15 +17,27 @@ public partial class CreateControl : UserControl
         DataContext = Context;
     }
 
-    private CreateControlDataContext Context { get; } = new();
+    protected CreateControlDataContext Context { get; set; } = new();
 
-    private void AddQuestionButton_OnClick(object sender, RoutedEventArgs e)
+    protected void AddQuestionButton_OnClick(object sender, RoutedEventArgs e)
     {
-        Context.CurrentQuiz.AddQuestion(Context.CurrentQuestion.Statement, Context.CurrentQuestion.CorrectAnswer,
-            Context.CurrentQuestion.Answers, Context.CurrentQuestion.Image);
+        var errorValue = "";
+
+        if (Context.CurrentQuestion.Statement == null) errorValue = "a question";
+        if (Context.CurrentQuestion.CorrectAnswer == null) errorValue = "a correct answer";
+        if (Context.CurrentQuestion.Answers == null) errorValue = "answers";
+
+        if (errorValue.Length > 0)
+        {
+            MessageBox.Show($"You forgot to set {errorValue}");
+            return;
+        }
+
+        Context.CurrentQuiz.AddQuestion(Context.CurrentQuestion.Statement!, (int)Context.CurrentQuestion.CorrectAnswer,
+            Context.CurrentQuestion.Answers!, Context.CurrentQuestion.Image);
     }
 
-    private void AddAnswerButton_OnClick(object sender, RoutedEventArgs e)
+    protected void AddAnswerButton_OnClick(object sender, RoutedEventArgs e)
     {
         var currentAnswers = new List<string>(Context.CurrentQuestion.Answers ?? new[] { "" });
         var newAnswer = AnswerTextBox.Text;
@@ -34,28 +46,29 @@ public partial class CreateControl : UserControl
         Context.CurrentQuestion.Answers = currentAnswers.ToArray();
     }
 
-    private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    protected void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         Context.CurrentQuestion.CorrectAnswer = PossibleAnswersListBox.SelectedIndex;
     }
 
-    private void CancelButton_OnClick(object sender, RoutedEventArgs e)
+    protected void CancelButton_OnClick(object sender, RoutedEventArgs e)
     {
         var containerWindow = Window.GetWindow(this);
         containerWindow?.Hide();
     }
 
-    private void CreateQuizButton_OnClick(object sender, RoutedEventArgs e)
+    protected async void CreateQuizButton_OnClick(object sender, RoutedEventArgs e)
     {
         FileHandler.SaveQuiz(Context.CurrentQuiz);
+        ((MainWindow)Application.Current.MainWindow).InitializeDataContext();
     }
 
-    private void QuizTitleTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+    protected void QuizTitleTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
     {
         Context.CurrentQuiz.Title = QuizTitleTextBox.Text;
     }
 
-    private void AddImageButton_OnClick(object sender, RoutedEventArgs e)
+    protected void AddImageButton_OnClick(object sender, RoutedEventArgs e)
     {
         var openFileDialog = new OpenFileDialog
         {
@@ -83,7 +96,7 @@ public partial class CreateControl : UserControl
         ;
     }
 
-    private void RemoveImageButton_OnClick(object sender, RoutedEventArgs e)
+    protected void RemoveImageButton_OnClick(object sender, RoutedEventArgs e)
     {
         Context.CurrentQuestion.Image = null;
         ImageElement.Source = null;

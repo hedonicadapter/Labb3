@@ -12,15 +12,15 @@ public class Question : INotifyPropertyChanged
     private byte[]? _image;
 
 
-    public Question(string statement,
-        string[] answers,
-        int correctAnswer, byte[]? image)
+    public Question(string? statement,
+        string[]? answers,
+        int? correctAnswer, byte[]? image = null)
     {
-        Statement = statement;
-        Answers = answers;
-        CorrectAnswer = correctAnswer;
+        Statement = statement ?? null;
+        Answers = answers ?? null;
+        CorrectAnswer = correctAnswer ?? null;
         AttemptedAnswer = -1;
-        Image = image;
+        Image = image ?? null;
     }
 
     public Question()
@@ -36,14 +36,15 @@ public class Question : INotifyPropertyChanged
         set => SetField(ref _image, value);
     }
 
-    public string[] Answers
+    public string[]? Answers
     {
         get => _answers;
         set => SetField(ref _answers, value);
     }
 
-    public int CorrectAnswer { get; set; }
-    public int AttemptedAnswer { get; set; }
+    // Inte clean, men den dubblar som currently selected answer i EditControl
+    public int? CorrectAnswer { get; set; }
+    public int? AttemptedAnswer { get; set; }
     public event PropertyChangedEventHandler? PropertyChanged;
 
     // Rider generated

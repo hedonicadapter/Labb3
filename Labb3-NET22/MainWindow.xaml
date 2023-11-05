@@ -4,16 +4,29 @@
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  mc:Ignorable="d"
-                 Title="Quiz app" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+                 Title="Quiz app" SizeToContent="Height" Width="400" WindowStartupLocation="CenterScreen">
     <Grid>
-        <StackPanel Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <Button x:Name="CreateButton" Content="Create quiz" Margin="2" Click="CreateButton_Click" />
-
-            <Button x:Name="EditButton" Content="Edit quiz" Margin="2" Click="EditButton_Click" />
-
-            <Button x:Name="PlayButton" Content="Play" Margin="2" Click="PlayButton_Click" />
+        <GroupBox Grid.Row="0" Margin="10,10,10,10">
+            <GroupBox.Header>
+                Welcome (≧﹏ ≦)
+            </GroupBox.Header>
+            <DataGrid Name="QuizSelectionGrid" SelectionMode="Single" ItemsSource="{Binding Quizzes}"
+                      PreviewMouseDoubleClick="QuizSelectionGrid_OnPreviewMouseDoubleClick"
+                      AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Quiz title" Binding="{Binding Title}" Width="*" IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+        <StackPanel Margin="12 2 12 12" Grid.Row="1">
+            <Button Content="Create" Name="CreateButton" Click="CreateButton_OnClick" />
+            <Button Content="Edit" Name="EditButton" Click="EditButton_OnClick" />
+            <Button Content="Play" Name="PlayButton" Click="PlayButton_OnClick" />
         </StackPanel>
-
     </Grid>
 </we:CustomWindow>

@@ -4,9 +4,144 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Labb3_NET22"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:helpers="clr-namespace:Labb3_NET22.Helpers"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        
+    <UserControl.DataContext>
+        <local:EditControlDataContext />
+    </UserControl.DataContext>
+
+
+    <Grid Margin="2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <xctk:WatermarkTextBox Grid.Column="0" x:Name="QuizTitleTextBox"
+                                   Text="{Binding CurrentQuiz.Title}"
+                                   Watermark="Quiz title" TextChanged="QuizTitleTextBox_OnTextChanged" />
+            <Label Grid.Column="1" Content=".json" />
+        </Grid>
+        <DataGrid Grid.Column="0" Grid.Row="1" x:Name="QuestionsDataGrid" MinHeight="100" MinWidth="240"
+                  AutoGenerateColumns="False" ItemsSource="{Binding CurrentQuiz.RedundantList}">
+            <DataGrid.Resources>
+                <helpers:AnswerIndexToStringConverter x:Key="IndexToStringConverter" />
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Question" Binding="{Binding Statement}" />
+                <DataGridTextColumn Header="Correct answer" Width="1*">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding Converter="{StaticResource IndexToStringConverter}">
+                            <Binding Path="CorrectAnswer" />
+                            <Binding Path="Answers" />
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+
+                <DataGridTemplateColumn Width="1*" Header="Answers">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding Answers}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <GroupBox Grid.Row="1" Grid.Column="1" Margin="10,10,10,10"
+                  DataContext="{Binding CurrentQuestion}">
+            <GroupBox.Header>
+                Edit question
+            </GroupBox.Header>
+            <StackPanel>
+                <StackPanel.Resources>
+                </StackPanel.Resources>
+                <DockPanel>
+                    <xctk:WatermarkTextBox x:Name="StatementTextBox"
+                                           Text="{Binding Statement}"
+                                           Watermark="Question text"
+                                           DockPanel.Dock="Left"
+                                           Width="180" />
+                    <ComboBox Width="Auto" Margin="4" ItemsSource="{Binding }" />
+                </DockPanel>
+
+                <Label>Possible answers</Label>
+                <ListView Name="PossibleAnswersListBox" ItemsSource="{Binding Answers}" MinHeight="20"
+                          SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged" />
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="48" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Grid.ColumnSpan="2" Content="Remove">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CorrectAnswer}" Value="">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <xctk:WatermarkTextBox Grid.Column="0" x:Name="AnswerTextBox"
+                                           Watermark="Add an answer..." />
+
+                    <Button Name="AddAnswerButton" Grid.Column="1" Content="Add"
+                            Click="AddAnswerButton_OnClick" />
+                </Grid>
+                <Image x:Name="ImageElement" HorizontalAlignment="Left" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Remove image" HorizontalAlignment="Right" Name="RemoveImageButton"
+                            Click="RemoveImageButton_OnClick">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Image}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Add image" HorizontalAlignment="Right" Name="AddImageButton"
+                            Click="AddImageButton_OnClick" />
+
+                </StackPanel>
+
+                <Separator Margin="4" VerticalAlignment="Bottom" Height="Auto" />
+
+                <Button Name="AddQuestionButton" Content="Add question"
+                        HorizontalAlignment="Stretch" Click="AddQuestionButton_OnClick" />
+            </StackPanel>
+
+        </GroupBox>
+
+        <StackPanel Margin="4 0 8 4" Grid.Row="3" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Name="SaveQuizButton" Content="Cancel" HorizontalAlignment="Stretch" Click="CancelButton_OnClick" />
+            <Button Name="CancelButton" Content="Create" HorizontalAlignment="Stretch" Click="SaveQuizButton_OnClick" />
+        </StackPanel>
     </Grid>
 </UserControl>
