@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using Labb3_NET22.DataModels;
 using Labb3_NET22.UserControls;
@@ -16,7 +17,11 @@ public class WindowHandler
         var className = $"Labb3_NET22.{windowName}Control, {AssemblyName}";
         var controlClass = Type.GetType(className);
 
-        if (controlClass == null) return null;
+        if (controlClass == null)
+        {
+            MessageBox.Show($"There is no control called {windowName}.");
+            return null;
+        }
 
         // Activator.CreateInstance från Chat-GPT
         var instance = data != null
@@ -54,9 +59,5 @@ public class WindowHandler
         };
 
         playWindow.Show();
-    }
-
-    public static void StartQuizEditor(Quiz selectedQuiz)
-    {
     }
 }

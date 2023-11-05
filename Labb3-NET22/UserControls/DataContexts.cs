@@ -145,4 +145,11 @@ public class PlayControlDataContext : INotifyPropertyChanged
 
 public class EditControlDataContext : CreateControlDataContext
 {
+    public EditControlDataContext(Quiz selectedQuiz)
+    {
+        CurrentQuiz = selectedQuiz;
+    }
+
+    public Quiz CurrentQuiz { get; }
+    public int CurrentlySelected { get; set; } = 0;
 }

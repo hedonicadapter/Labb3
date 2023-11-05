@@ -3,14 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Labb3_NET22"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:helpers="clr-namespace:Labb3_NET22.Helpers"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.DataContext>
-        <local:EditControlDataContext />
-    </UserControl.DataContext>
+             d:DesignHeight="300" d:DesignWidth="300"
+             Height="Auto" Width="600">
 
 
     <Grid Margin="2">
@@ -67,7 +64,7 @@
         </DataGrid>
 
         <GroupBox Grid.Row="1" Grid.Column="1" Margin="10,10,10,10"
-                  DataContext="{Binding CurrentQuestion}">
+                  DataContext="{Binding Context}">
             <GroupBox.Header>
                 Edit question
             </GroupBox.Header>
@@ -76,16 +73,20 @@
                 </StackPanel.Resources>
                 <DockPanel>
                     <xctk:WatermarkTextBox x:Name="StatementTextBox"
-                                           Text="{Binding Statement}"
+                                           Text="{Binding CurrentQuestion.Statement}"
                                            Watermark="Question text"
                                            DockPanel.Dock="Left"
                                            Width="180" />
-                    <ComboBox Width="Auto" Margin="4" ItemsSource="{Binding }" />
+                    <ComboBox Width="Auto" Margin="4" ItemsSource="{Binding CurrentQuestion.Tag }" />
                 </DockPanel>
 
                 <Label>Possible answers</Label>
-                <ListView Name="PossibleAnswersListBox" ItemsSource="{Binding Answers}" MinHeight="20"
-                          SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged" />
+                <DataGrid Name="PossibleAnswersDataGrid" ItemsSource="{Binding CurrentQuestion.Answers}" MinHeight="20"
+                          SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Answers" Binding="{Binding}" />
+                    </DataGrid.Columns>
+                </DataGrid>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -98,7 +99,7 @@
                             <Style TargetType="Button">
                                 <Setter Property="IsEnabled" Value="False" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding CorrectAnswer}" Value="">
+                                    <DataTrigger Binding="{Binding CurrentlySelected}" Value="">
                                         <Setter Property="IsEnabled" Value="True" />
                                     </DataTrigger>
                                 </Style.Triggers>

@@ -42,7 +42,7 @@
             <Label Grid.Column="1" Content=".json" />
         </Grid>
         <DataGrid Grid.Column="0" Grid.Row="1" x:Name="QuestionsDataGrid" MinHeight="100" MinWidth="240"
-                  AutoGenerateColumns="False" ItemsSource="{Binding CurrentQuiz.RedundantList}">
+                  AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding CurrentQuiz.RedundantList}">
             <DataGrid.Resources>
                 <helpers:AnswerIndexToStringConverter x:Key="IndexToStringConverter" />
             </DataGrid.Resources>
@@ -86,7 +86,17 @@
 
                 <Label>Possible answers</Label>
                 <ListView Name="PossibleAnswersListBox" ItemsSource="{Binding Answers}" MinHeight="20"
-                          SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged" />
+                          SelectionMode="Single" SelectionChanged="Selector_OnSelectionChanged">
+                    <ListView.Style>
+                        <Style TargetType="ListView">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Answers.Length}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListView.Style>
+                </ListView>
 
                 <Grid>
                     <Grid.ColumnDefinitions>

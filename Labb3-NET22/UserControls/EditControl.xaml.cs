@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using Labb3_NET22.DataModels;
 using Labb3_NET22.Helpers;
 using Microsoft.Win32;
 
@@ -10,14 +11,15 @@ namespace Labb3_NET22;
 
 public partial class EditControl : UserControl
 {
-    public EditControl()
+    public EditControl(Quiz selectedQuiz)
     {
-        InitializeComponent();
-
+        Context = new EditControlDataContext(selectedQuiz);
         DataContext = Context;
+
+        InitializeComponent();
     }
 
-    protected EditControlDataContext Context { get; set; } = new();
+    protected EditControlDataContext Context { get; set; }
 
     protected void AddQuestionButton_OnClick(object sender, RoutedEventArgs e)
     {
@@ -27,7 +29,15 @@ public partial class EditControl : UserControl
 
     protected void AddAnswerButton_OnClick(object sender, RoutedEventArgs e)
     {
-        var currentAnswers = new List<string>(Context.CurrentQuestion.Answers ?? new[] { "" });
+        if (AnswerTextBox.Text.Length < 1)
+        {
+            MessageBox.Show("Please add words to your answer smh."); // Borde vara two answers egentligen men w/e
+            return;
+        }
+
+        var currentAnswers = Context.CurrentQuestion.Answers != null
+            ? new List<string>(Context.CurrentQuestion.Answers)
+            : new List<string>();
         var newAnswer = AnswerTextBox.Text;
         currentAnswers.Add(newAnswer);
 
@@ -36,7 +46,7 @@ public partial class EditControl : UserControl
 
     protected void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        Context.CurrentQuestion.CorrectAnswer = PossibleAnswersListBox.SelectedIndex;
+        Context.CurrentlySelected = PossibleAnswersDataGrid.SelectedIndex;
     }
 
     protected void CancelButton_OnClick(object sender, RoutedEventArgs e)
@@ -47,6 +57,19 @@ public partial class EditControl : UserControl
 
     protected void SaveQuizButton_OnClick(object sender, RoutedEventArgs e)
     {
+        if (Context.CurrentQuestion.Answers == null || Context.CurrentQuestion.Answers.Length < 1)
+        {
+            MessageBox.Show("Please add at least one answer."); // Borde vara two answers egentligen men w/e
+            return;
+        }
+
+        if (Context.CurrentQuestion.CorrectAnswer is null or -1)
+        {
+            MessageBox.Show("Please select the correct answer.");
+            return;
+        }
+
+
         FileHandler.SaveQuiz(Context.CurrentQuiz);
     }
 

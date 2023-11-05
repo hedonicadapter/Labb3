@@ -38,18 +38,6 @@ public partial class MainWindow : CustomWindow
         _windows.ShowWindow("Play", selectedQuiz);
     }
 
-    private void EditButton_Click(object sender, RoutedEventArgs e)
-    {
-        var selectedQuiz = (Quiz)QuizSelectionGrid.SelectedItem;
-
-        if (selectedQuiz == null)
-        {
-            MessageBox.Show("Select a quiz first idiota");
-            return;
-        }
-
-        _windows.ShowWindow("Edit", selectedQuiz);
-    }
 
     private void CreateButton_OnClick(object sender, RoutedEventArgs e)
     {
@@ -79,7 +67,7 @@ public partial class MainWindow : CustomWindow
             return;
         }
 
-        WindowHandler.StartQuizEditor(selectedQuiz);
+        _windows.ShowWindow("Edit", selectedQuiz);
     }
 
     private void QuizSelectionGrid_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)

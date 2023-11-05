@@ -39,7 +39,15 @@ public partial class CreateControl : UserControl
 
     protected void AddAnswerButton_OnClick(object sender, RoutedEventArgs e)
     {
-        var currentAnswers = new List<string>(Context.CurrentQuestion.Answers ?? new[] { "" });
+        if (AnswerTextBox.Text.Length < 1)
+        {
+            MessageBox.Show("Please add words to your answer smh."); // Borde vara two answers egentligen men w/e
+            return;
+        }
+
+        var currentAnswers = Context.CurrentQuestion.Answers != null
+            ? new List<string>(Context.CurrentQuestion.Answers)
+            : new List<string>();
         var newAnswer = AnswerTextBox.Text;
         currentAnswers.Add(newAnswer);
 
@@ -59,7 +67,7 @@ public partial class CreateControl : UserControl
 
     protected async void CreateQuizButton_OnClick(object sender, RoutedEventArgs e)
     {
-        FileHandler.SaveQuiz(Context.CurrentQuiz);
+        await FileHandler.SaveQuiz(Context.CurrentQuiz);
         ((MainWindow)Application.Current.MainWindow).InitializeDataContext();
     }
 

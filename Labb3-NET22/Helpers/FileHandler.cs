@@ -71,14 +71,14 @@ public static class FileHandler
         return null;
     }
 
-    public static void SaveQuiz(Quiz quiz)
+    public static async Task SaveQuiz(Quiz quiz)
     {
         try
         {
             // Orkar inte type safety json igen (￣o￣) . z Z
             var json = JsonConvert.SerializeObject(quiz);
 
-            File.WriteAllText($"{AppDataPath}/Labb3/{quiz.Title}.json", json);
+            await File.WriteAllTextAsync($"{AppDataPath}/Labb3/{quiz.Title}.json", json);
         }
         catch (Exception e)
         {
