@@ -22,7 +22,7 @@ public partial class CreateControl : UserControl
     private void AddQuestionButton_OnClick(object sender, RoutedEventArgs e)
     {
         Context.CurrentQuiz.AddQuestion(Context.CurrentQuestion.Statement, Context.CurrentQuestion.CorrectAnswer,
-            Context.CurrentQuestion.Answers);
+            Context.CurrentQuestion.Answers, Context.CurrentQuestion.Image);
     }
 
     private void AddAnswerButton_OnClick(object sender, RoutedEventArgs e)
@@ -55,7 +55,7 @@ public partial class CreateControl : UserControl
         Context.CurrentQuiz.Title = QuizTitleTextBox.Text;
     }
 
-    private async void AddImageButton_OnClick(object sender, RoutedEventArgs e)
+    private void AddImageButton_OnClick(object sender, RoutedEventArgs e)
     {
         var openFileDialog = new OpenFileDialog
         {
@@ -81,5 +81,11 @@ public partial class CreateControl : UserControl
         }
 
         ;
+    }
+
+    private void RemoveImageButton_OnClick(object sender, RoutedEventArgs e)
+    {
+        Context.CurrentQuestion.Image = null;
+        ImageElement.Source = null;
     }
 }

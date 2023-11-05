@@ -1,22 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 
 namespace Labb3_NET22.DataModels;
 
+[JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
 public class Question : INotifyPropertyChanged
 {
     private string[]? _answers;
+    private byte[]? _image;
 
 
     public Question(string statement,
         string[] answers,
-        int correctAnswer)
+        int correctAnswer, byte[]? image)
     {
         Statement = statement;
         Answers = answers;
         CorrectAnswer = correctAnswer;
         AttemptedAnswer = -1;
+        Image = image;
     }
 
     public Question()
@@ -26,7 +30,11 @@ public class Question : INotifyPropertyChanged
     public string? Statement { get; set; }
     public string? Tag { get; set; }
 
-    public byte[]? Image { get; set; } = new byte[0];
+    public byte[]? Image
+    {
+        get => _image;
+        set => SetField(ref _image, value);
+    }
 
     public string[] Answers
     {

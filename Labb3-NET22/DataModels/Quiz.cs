@@ -9,7 +9,6 @@ public class Quiz
 {
     public Quiz()
     {
-        Questions = new List<Question>();
         RedundantList = new ObservableCollection<Question>();
     }
 
@@ -29,7 +28,7 @@ public class Quiz
     //     }
     // }
 
-    private IEnumerable<Question> Questions { get; }
+    private IEnumerable<Question>? Questions { get; }
 
     public string Title { get; set; } = string.Empty;
 
@@ -49,9 +48,9 @@ public class Quiz
         return RedundantList[index];
     }
 
-    public void AddQuestion(string statement, int correctAnswer, params string[] answers)
+    public void AddQuestion(string statement, int correctAnswer, string[] answers, byte[]? image)
     {
-        RedundantList.Add(new Question(statement, answers, correctAnswer));
+        RedundantList.Add(new Question(statement, answers, correctAnswer, image));
     }
 
     public void RemoveQuestion(int index)

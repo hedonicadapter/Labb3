@@ -27,7 +27,7 @@ public static class FileHandler
     }
 
 
-    public static async Task<List<Quiz>?> ReadQuizFiles()
+    public static async Task<List<Quiz?>?> ReadQuizFiles()
     {
         try
         {
@@ -43,9 +43,9 @@ public static class FileHandler
             }
 
 
-            return foundQuizFiles.Count > 0
-                ? foundQuizFiles
-                : throw new Exception("No quiz files found in app folder.");
+            if (foundQuizFiles.Count > 0) return foundQuizFiles;
+            MessageBox.Show("No quiz files found in app folder.");
+            return null;
         }
         catch (Exception e)
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Windows;
 using System.Windows.Controls;
 using Labb3_NET22.DataModels;
 using Labb3_NET22.UserControls;
@@ -39,7 +38,6 @@ public class WindowHandler
         var window = GetWindow(windowName);
         if (window == null) return;
 
-        window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         window.ShowDialog();
     }
 
@@ -53,7 +51,6 @@ public class WindowHandler
             Name = "InGame",
             Content = inGameControl
         };
-        inGameWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
         inGameWindow.Show();
     }

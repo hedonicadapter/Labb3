@@ -8,6 +8,7 @@ public class CustomWindow : Window
     public CustomWindow()
     {
         SizeToContent = SizeToContent.WidthAndHeight;
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
 
 

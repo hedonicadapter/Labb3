@@ -101,8 +101,24 @@
                             Click="AddAnswerButton_OnClick" />
                 </Grid>
                 <Image x:Name="ImageElement" HorizontalAlignment="Left" />
-                <Button Content="Add image" HorizontalAlignment="Right" Name="AddImageButton"
-                        Click="AddImageButton_OnClick" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Remove image" HorizontalAlignment="Right" Name="RemoveImageButton"
+                            Click="RemoveImageButton_OnClick">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Image}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Add image" HorizontalAlignment="Right" Name="AddImageButton"
+                            Click="AddImageButton_OnClick" />
+
+                </StackPanel>
 
                 <Separator Margin="4" VerticalAlignment="Bottom" Height="Auto" />
 
